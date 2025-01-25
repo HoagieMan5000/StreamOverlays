@@ -1,4 +1,5 @@
 import { ElementParams } from "../config/ElementParams";
+import { createTextWithSpacing } from "../util/canvas/canvasTextUtil";
 import { getScaleRatio } from "../util/render/renderUtil";
 import { deg2rad } from "../util/Util";
 import { IRenderer } from "./IRenderer";
@@ -25,7 +26,12 @@ export class ProgressCountRenderer implements IRenderer {
     ctx.translate(this.config.origin.x * scale.heightRatio, this.config.origin.y * scale.widthRatio);
     ctx.rotate(deg2rad(this.config.rotation));
     ctx.font = `900 ${75 * scale.scale}px Franklin Gothic`;
+    ctx.fontKerning = "auto";
     ctx.fillStyle = this.config.color;
-    ctx.fillText("23 / 169", 0 * scale.heightRatio, 0 * scale.widthRatio);
+    const { width } = createTextWithSpacing(ctx,
+      "23/169",
+      (char, dx) => ctx.fillText(char, 0 + dx, 0),
+      0.0001 * scale.scale
+    );
   }
 }

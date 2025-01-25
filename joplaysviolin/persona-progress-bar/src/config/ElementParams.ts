@@ -28,14 +28,12 @@ export class ElementParams {
     public static readonly ProgressCounts: Record<string, ProgressCountConfig> = {
         subs: {
             origin: { x: 90, y: 675 },
-            height: 75,
             rotation: -8.9,
             font: "900 75px Franklin Gothic",
             color: ElementParams.ColorSubs,
         },
         donos: {
             origin: { x: 410, y: 610 },
-            height: 75,
             rotation: -8.9,
             font: "900 75px Franklin Gothic",
             color: ElementParams.ColorDonos,

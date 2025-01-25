@@ -1,11 +1,10 @@
-:root {
-  margin: 0px;
-  height: 100%;
-  width: 100%;
-
+#root {
+  display: flex;
+  align-items: center;
+  height: 95vh;
+  margin: 10px;
   font-family: 'Franklin Gothic', sans-serif;
 
-  color: rgba(255, 255, 255, 0.87);
   background-color: transparent;
 
   font-synthesis: none;
