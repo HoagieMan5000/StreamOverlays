@@ -29,9 +29,9 @@ export class ProgressCountRenderer implements IRenderer {
     ctx.fontKerning = "auto";
     ctx.fillStyle = this.config.color;
     const { width } = createTextWithSpacing(ctx,
-      "23/169",
+      "023/0169",
       (char, dx) => ctx.fillText(char, 0 + dx, 0),
-      0.0001 * scale.scale
+      -5 * scale.scale
     );
   }
 }
