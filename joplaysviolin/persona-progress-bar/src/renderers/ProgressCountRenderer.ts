@@ -30,7 +30,12 @@ export class ProgressCountRenderer implements IRenderer {
     ctx.fillStyle = this.config.color;
     const { width } = createTextWithSpacing(ctx,
       "023/0169",
-      (char, dx) => ctx.fillText(char, 0 + dx, 0),
+      (char, dx) => {
+        ctx.save();
+        ctx.rotate(0.03 * Math.random() - 0.05),
+        ctx.fillText(char, 0 + dx, Math.random() * 0.6),
+        ctx.restore();
+      },
       -5 * scale.scale
     );
   }
