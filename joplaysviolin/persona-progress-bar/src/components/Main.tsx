@@ -1,7 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { setCanvasFullScreen } from "../util/canvas/canvasUtil";
 import { MainRenderer } from "../renderers/MainRenderer";
-import { OnSessionUpdateEvent, SEDetail, SessionData } from "../streamelements/SEDetail";
+import {
+  OnSessionUpdateEvent,
+  SEDetail,
+  SessionData,
+} from "../streamelements/SEDetail";
 
 interface MainProps {}
 
@@ -10,7 +14,12 @@ export const Main: React.FC<MainProps> = ({}) => {
 
   const rendererRef = useRef<MainRenderer | null>(null);
   const [widgetData, setWidgetData] = useState<SEDetail | null>(null);
+  const widgetDataRef = useRef<SEDetail | null>(null);
+
   console.log({ widgetData });
+  useEffect(() => {
+    widgetDataRef.current = widgetData;
+  }, [widgetData]);
 
   const draw = (detail: SEDetail | null) => {
     rendererRef.current?.render(detail);
@@ -39,30 +48,33 @@ export const Main: React.FC<MainProps> = ({}) => {
   };
 
   const onSessionUpdate = (obj: OnSessionUpdateEvent) => {
-    const newSession = obj.detail?.session;
-    const newDetail = {
-      ...widgetData!,
-      session: {
-        ...widgetData!.session,
-        data: {
-          ...widgetData!.session.data,
-          ...newSession,
+    const widgetData = widgetDataRef.current;
+    if (widgetData) {
+      const newSession = obj.detail?.session;
+      const newDetail = {
+        ...widgetData!,
+        session: {
+          ...widgetData!.session,
+          data: {
+            ...widgetData!.session.data,
+            ...newSession,
+          },
         },
-      },
-    };
+      };
 
-    setWidgetData((prev: SEDetail | null) => ({
-      ...prev!,
-      session: {
-        ...prev!.session,
-        data: {
-          ...prev?.session.data,
-          ...newSession,
+      setWidgetData((prev: SEDetail | null) => ({
+        ...prev!,
+        session: {
+          ...prev!.session,
+          data: {
+            ...prev?.session.data,
+            ...newSession,
+          },
         },
-      },
-    }));
+      }));
 
-    draw(newDetail);
+      draw(newDetail);
+    }
   };
 
   useEffect(() => {

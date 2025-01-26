@@ -1,4 +1,4 @@
 node_modules
 dist
 vite-react-element-test
-streamelements
+/streamelements
