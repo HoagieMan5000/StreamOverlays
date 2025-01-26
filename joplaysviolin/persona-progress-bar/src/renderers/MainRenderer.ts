@@ -1,4 +1,5 @@
 import { ElementParams } from "../config/ElementParams";
+import { SEDetail } from "../streamelements/SEDetail";
 import { BackgroundImageRenderer } from "./BackgroundImageRenderer";
 import { IRenderer } from "./IRenderer";
 import { ProgressBarRenderer } from "./ProgressBarRenderer";
@@ -18,18 +19,18 @@ export class MainRenderer implements IRenderer {
     this.renderers.push(new ProgressCountRenderer(this.canvas, ElementParams.ProgressCounts.subs));
   }
 
-  public async initialize(widgetData: any): Promise<void> {
+  public async initialize(detail: SEDetail | null): Promise<void> {
     for (const renderer of this.renderers) {
-      await renderer.initialize(widgetData);
+      await renderer.initialize(detail);
     }
   }
 
-  render() {
+  render(detail: SEDetail | null) {
     const ctx = this.canvas.getContext("2d")!;
     ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     for (const renderer of this.renderers) {
       ctx.save();
-      renderer.render();
+      renderer.render(detail);
       ctx.restore();
     }
   }

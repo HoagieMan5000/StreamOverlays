@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { setCanvasFullScreen } from "../util/canvas/canvasUtil";
 import { MainRenderer } from "../renderers/MainRenderer";
+import { OnSessionUpdateEvent, SEDetail, SessionData } from "../streamelements/SEDetail";
 
 interface MainProps {}
 
@@ -8,48 +9,79 @@ export const Main: React.FC<MainProps> = ({}) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const rendererRef = useRef<MainRenderer | null>(null);
-  const [widgetData, setWidgetData] = useState<any>(null);
+  const [widgetData, setWidgetData] = useState<SEDetail | null>(null);
+  console.log({ widgetData });
+
+  const draw = (detail: SEDetail | null) => {
+    rendererRef.current?.render(detail);
+  };
 
   useEffect(() => {
     async function initialize() {
       const canvas = canvasRef.current;
-      if (canvas) {
+      if (widgetData && canvas && !rendererRef.current) {
+        console.log("CREATING");
         rendererRef.current = new MainRenderer(canvas);
         await rendererRef.current.initialize(widgetData);
-        draw();
+        draw(widgetData);
       }
     }
     initialize();
   }, [widgetData, canvasRef.current]);
 
-  const getConfiguration = (obj: any) => {
+  const getConfiguration = (obj: { detail: SEDetail }) => {
     const detail = obj.detail;
     const fieldData = detail.fieldData;
-    //const channelName = detail.channel.username;
 
+    console.log({ detail });
     console.log({ fieldData });
-    setWidgetData(fieldData);
+    setWidgetData(detail);
   };
 
-  const draw = () => {
-    rendererRef.current?.render();
+  const onSessionUpdate = (obj: OnSessionUpdateEvent) => {
+    const newSession = obj.detail?.session;
+    const newDetail = {
+      ...widgetData!,
+      session: {
+        ...widgetData!.session,
+        data: {
+          ...widgetData!.session.data,
+          ...newSession,
+        },
+      },
+    };
+
+    setWidgetData((prev: SEDetail | null) => ({
+      ...prev!,
+      session: {
+        ...prev!.session,
+        data: {
+          ...prev?.session.data,
+          ...newSession,
+        },
+      },
+    }));
+
+    draw(newDetail);
   };
 
   useEffect(() => {
     const resizeCanvas = () => {
       const canvas = canvasRef.current;
       setCanvasFullScreen(canvas!);
-      draw();
+      draw(widgetData);
     };
 
     resizeCanvas();
 
     window.addEventListener("resize", resizeCanvas);
-    window.addEventListener("onWidgetLoad", getConfiguration);
+    window.addEventListener("onWidgetLoad", getConfiguration as any);
+    window.addEventListener("onSessionUpdate", onSessionUpdate as any);
 
     return () => {
       window.removeEventListener("resize", resizeCanvas);
-      window.removeEventListener("onWidgetLoad", getConfiguration);
+      window.removeEventListener("onWidgetLoad", getConfiguration as any);
+      window.removeEventListener("onSessionUpdate", onSessionUpdate as any);
     };
   }, []);
 

@@ -1,20 +1,25 @@
 import { ElementParams } from "../config/ElementParams";
+import { ProgressBarConfig } from "../config/ProgressBarConfig";
+import { SEDetail } from "../streamelements/SEDetail";
 import { getScaleRatio } from "../util/render/renderUtil";
 import { deg2rad } from "../util/Util";
 import { IRenderer } from "./IRenderer";
 
 export class ProgressBarRenderer implements IRenderer {
   private canvas: HTMLCanvasElement;
-  private config: any; // TODO type
+  private config: ProgressBarConfig;
 
-  constructor(canvas: HTMLCanvasElement, config: any) {
+  constructor(canvas: HTMLCanvasElement, config: ProgressBarConfig) {
     this.canvas = canvas;
     this.config = config;
   }
 
-  public async initialize(widgetData: any): Promise<void> {}
+  public async initialize(detail: SEDetail | null): Promise<void> {}
 
-  render() {
+  render(detail: SEDetail | null) {
+    const value = this.config.getValue(detail);
+    const goal = this.config.getGoal(detail);
+
     const scale = getScaleRatio(
       this.canvas,
       ElementParams.referenceCanvasWidth,
@@ -23,18 +28,18 @@ export class ProgressBarRenderer implements IRenderer {
     console.log({ scale });
     const ctx = this.canvas.getContext("2d")!;
 
-    const donosProgressPercent = 0.69; // TODO
-    const donos = this.config;
+    const donosProgressPercent = goal > 0 ? value / goal : 0;
+    const config = this.config;
     ctx.translate(
-      donos.origin.x * scale.widthRatio,
-      donos.origin.y * scale.heightRatio
+      config.origin.x * scale.widthRatio,
+      config.origin.y * scale.heightRatio
     );
-    ctx.rotate(deg2rad(donos.rotation));
-    ctx.fillStyle = donos.color;
+    ctx.rotate(deg2rad(config.rotation));
+    ctx.fillStyle = config.color;
     ctx.fillRect(
       0,
       0,
-      donos.maxWidth * donosProgressPercent * scale.widthRatio,
+      config.maxWidth * donosProgressPercent * scale.widthRatio,
       38 * scale.heightRatio
     );
   }
