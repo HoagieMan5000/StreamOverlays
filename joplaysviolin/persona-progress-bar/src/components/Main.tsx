@@ -81,7 +81,7 @@ export const Main: React.FC<MainProps> = ({}) => {
     const resizeCanvas = () => {
       const canvas = canvasRef.current;
       setCanvasFullScreen(canvas!);
-      draw(widgetData);
+      draw(widgetDataRef.current);
     };
 
     resizeCanvas();
