@@ -30,7 +30,6 @@ export class ProgressBarRenderer implements IRenderer {
     const goal = this.config.getGoal(detail);
 
     const targetPercent = goal > 0 ? value / goal : 0;
-    console.log({ value, goal, targetPercent });
       // Animation not running
     if (!this.currAnim) {
       if (value === this.previousValue) {
@@ -58,6 +57,7 @@ export class ProgressBarRenderer implements IRenderer {
       ElementParams.referenceCanvasHeight
     );
     const ctx = this.canvas.getContext("2d")!;
+    ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     ctx.save();
     const donosProgressPercent = percentage;
@@ -82,10 +82,11 @@ export class ProgressBarRenderer implements IRenderer {
       value: startValue,
       target: targetPercent,
     };
+
     const newAnim = anime({
       targets: this.currAnim,
       value: this.currAnim!.target,
-      duration: 3000,
+      duration: 1000,
       easing: "easeOutCubic",
       update: () => {
         this.renderBar(this.currAnim!.value);

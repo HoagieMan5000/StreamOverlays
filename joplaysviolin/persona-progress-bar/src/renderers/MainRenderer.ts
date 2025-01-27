@@ -1,6 +1,7 @@
 import { ElementParams } from "../config/ElementParams";
 import { SEDetail } from "../streamelements/SEDetail";
 import { BackgroundImageRenderer } from "./BackgroundImageRenderer";
+import { CanvasRenderer } from "./CanvasRenderer";
 import { IRenderer } from "./IRenderer";
 import { ProgressBarRenderer } from "./ProgressBarRenderer";
 import { ProgressCountRenderer } from "./ProgressCountRenderer";
@@ -10,12 +11,18 @@ export class MainRenderer implements IRenderer {
 
   private renderers: IRenderer[] = [];
 
-  constructor(canvas: HTMLCanvasElement) {
-    this.canvas = canvas;
+  constructor(imageCanvas: HTMLCanvasElement, subBarCanvas: HTMLCanvasElement, donoBarCanvas: HTMLCanvasElement) {
+    this.canvas = imageCanvas;
     this.renderers.push(new BackgroundImageRenderer(this.canvas));
-    this.renderers.push(new ProgressBarRenderer(this.canvas, ElementParams.ProgressBars.donos));
-    this.renderers.push(new ProgressBarRenderer(this.canvas, ElementParams.ProgressBars.subs));
+
+    const donoProgressBar = new ProgressBarRenderer(donoBarCanvas, ElementParams.ProgressBars.donos);
+    this.renderers.push(new CanvasRenderer(donoBarCanvas, [donoProgressBar]));   
+    
     this.renderers.push(new ProgressCountRenderer(this.canvas, ElementParams.ProgressCounts.donos));
+
+    const subProgressBar = new ProgressBarRenderer(subBarCanvas, ElementParams.ProgressBars.subs);
+    this.renderers.push(new CanvasRenderer(subBarCanvas, [subProgressBar]));
+    
     this.renderers.push(new ProgressCountRenderer(this.canvas, ElementParams.ProgressCounts.subs));
   }
 

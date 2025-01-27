@@ -11,6 +11,8 @@ interface MainProps {}
 
 export const Main: React.FC<MainProps> = ({}) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const subBarCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const donoBarCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const rendererRef = useRef<MainRenderer | null>(null);
   const [widgetData, setWidgetData] = useState<SEDetail | null>(null);
@@ -28,15 +30,17 @@ export const Main: React.FC<MainProps> = ({}) => {
   useEffect(() => {
     async function initialize() {
       const canvas = canvasRef.current;
-      if (widgetData && canvas && !rendererRef.current) {
+      const subBarCanvas = subBarCanvasRef.current;
+      const donoBarCanvas = donoBarCanvasRef.current;
+      if (widgetData && canvas && subBarCanvas && donoBarCanvas && !rendererRef.current) {
         console.log("CREATING");
-        rendererRef.current = new MainRenderer(canvas);
+        rendererRef.current = new MainRenderer(canvas, subBarCanvas, donoBarCanvas);
         await rendererRef.current.initialize(widgetData);
         draw(widgetData);
       }
     }
     initialize();
-  }, [widgetData, canvasRef.current]);
+  }, [widgetData, canvasRef.current, subBarCanvasRef.current, donoBarCanvasRef]);
 
   const getConfiguration = (obj: { detail: SEDetail }) => {
     const detail = obj.detail;
@@ -79,9 +83,11 @@ export const Main: React.FC<MainProps> = ({}) => {
 
   useEffect(() => {
     const resizeCanvas = () => {
-      const canvas = canvasRef.current;
-      setCanvasFullScreen(canvas!);
-      draw(widgetDataRef.current);
+      const canvases = [canvasRef.current, subBarCanvasRef.current, donoBarCanvasRef.current];
+      canvases.forEach((canvas) => {
+        setCanvasFullScreen(canvas!);
+        draw(widgetDataRef.current);  
+      });
     };
 
     resizeCanvas();
@@ -98,11 +104,25 @@ export const Main: React.FC<MainProps> = ({}) => {
   }, []);
 
   return (
-    <canvas
-      style={{ display: "block" }}
-      ref={canvasRef}
-      width="100%"
-      height="100%"
-    ></canvas>
+    <>
+      <canvas
+        style={{ display: "block" }}
+        ref={canvasRef}
+        width="100%"
+        height="100%"
+      ></canvas>
+      <canvas
+        style={{ display: "block" }}
+        ref={subBarCanvasRef}
+        width="100%"
+        height="100%"
+      ></canvas>
+      <canvas
+        style={{ display: "block" }}
+        ref={donoBarCanvasRef}
+        width="100%"
+        height="100%"
+      ></canvas>
+    </>
   );
 };

@@ -12,3 +12,9 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+canvas {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}

@@ -39,11 +39,11 @@ export class ProgressCountRenderer implements IRenderer {
       `${currency}${value}/${goal}`,
       (char, dx) => {
         ctx.save();
-        ctx.rotate(0.03 * Math.random() - 0.05),
+        ctx.rotate(0.03 * Math.random() - 0.03),
         ctx.fillText(char, 0 + dx, Math.random() * 0.6),
         ctx.restore();
       },
-      -5 * scale.scale
+      -2 * scale.scale
     );
   }
 }
