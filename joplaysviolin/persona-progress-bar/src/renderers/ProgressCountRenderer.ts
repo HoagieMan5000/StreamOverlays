@@ -6,6 +6,11 @@ import { getScaleRatio } from "../util/render/renderUtil";
 import { deg2rad } from "../util/Util";
 import { IRenderer } from "./IRenderer";
 
+const characterRotations = [0.001, -0.002, 0.003, 0.001, -0.002, 0.005, 0.0, 0.0025];
+const getRotation = (i: number) => characterRotations[i % characterRotations.length];
+const yOffsets = [0.0, 0.3, 0.2, 0.6, 0.5, 0.0, 0.1];
+const getYOffset = (i: number) => yOffsets[i % yOffsets.length];
+
 export class ProgressCountRenderer implements IRenderer {
   private canvas: HTMLCanvasElement;
   private config: ProgressCountConfig;
@@ -37,10 +42,10 @@ export class ProgressCountRenderer implements IRenderer {
     ctx.fillStyle = this.config.color;
     const { width } = createTextWithSpacing(ctx,
       `${currency}${value}/${goal}`,
-      (char, dx) => {
+      (char, dx, i) => {
         ctx.save();
-        ctx.rotate(0.03 * Math.random() - 0.03),
-        ctx.fillText(char, 0 + dx, Math.random() * 0.6),
+        ctx.rotate(getRotation(i ?? 0)),
+        ctx.fillText(char, 0 + dx, getYOffset(i ?? 0)),
         ctx.restore();
       },
       -2 * scale.scale
