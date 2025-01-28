@@ -11,19 +11,25 @@ export class MainRenderer implements IRenderer {
 
   private renderers: IRenderer[] = [];
 
-  constructor(imageCanvas: HTMLCanvasElement, subBarCanvas: HTMLCanvasElement, donoBarCanvas: HTMLCanvasElement) {
+  constructor(
+    imageCanvas: HTMLCanvasElement,
+    subBarCanvas: HTMLCanvasElement,
+    donoBarCanvas: HTMLCanvasElement,
+    subCountCanvas: HTMLCanvasElement,
+    donoCountCanvas: HTMLCanvasElement,
+  ) {
     this.canvas = imageCanvas;
     this.renderers.push(new BackgroundImageRenderer(this.canvas));
 
     const donoProgressBar = new ProgressBarRenderer(donoBarCanvas, ElementParams.ProgressBars.donos);
     this.renderers.push(new CanvasRenderer(donoBarCanvas, [donoProgressBar]));   
     
-    this.renderers.push(new ProgressCountRenderer(this.canvas, ElementParams.ProgressCounts.donos));
+    this.renderers.push(new ProgressCountRenderer(donoCountCanvas, ElementParams.ProgressCounts.donos));
 
     const subProgressBar = new ProgressBarRenderer(subBarCanvas, ElementParams.ProgressBars.subs);
     this.renderers.push(new CanvasRenderer(subBarCanvas, [subProgressBar]));
     
-    this.renderers.push(new ProgressCountRenderer(this.canvas, ElementParams.ProgressCounts.subs));
+    this.renderers.push(new ProgressCountRenderer(subCountCanvas, ElementParams.ProgressCounts.subs));
   }
 
   public async initialize(detail: SEDetail | null): Promise<void> {

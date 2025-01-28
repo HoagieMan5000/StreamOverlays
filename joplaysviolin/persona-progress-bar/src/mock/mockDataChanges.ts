@@ -4,7 +4,7 @@ import { defaultMockWidgetData } from "./mockWidgetData";
 export async function mockDataChanges1() {
   let currSession = defaultMockWidgetData.detail.session.data;
 
-  await sleep(1000);
+  await sleep(4000);
   currSession = {
     ...currSession,
     "subscriber-session": {
@@ -13,17 +13,11 @@ export async function mockDataChanges1() {
   };
   sendEvent(currSession);
 
-  await sleep(4000);
-/*  currSession = {
+  await sleep(3000);
+  currSession = {
     ...currSession,
     "tip-session": {
       amount: 102,
-    },
-  };*/
-  currSession = {
-    ...currSession,
-    "subscriber-session": {
-      count: 3,
     },
   };
   sendEvent(currSession);

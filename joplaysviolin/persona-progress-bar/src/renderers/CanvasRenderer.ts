@@ -1,9 +1,5 @@
-import { ElementParams } from "../config/ElementParams";
 import { SEDetail } from "../streamelements/SEDetail";
-import { BackgroundImageRenderer } from "./BackgroundImageRenderer";
 import { IRenderer } from "./IRenderer";
-import { ProgressBarRenderer } from "./ProgressBarRenderer";
-import { ProgressCountRenderer } from "./ProgressCountRenderer";
 
 export class CanvasRenderer implements IRenderer {
   private canvas: HTMLCanvasElement;
