@@ -12,14 +12,16 @@ export const DevMock = () => {
   }
 
   useEffect(() => {
-    console.log("Dispatching mock onWidgetLoad");
-    const root = document.getElementById("root");
-    const customEvent = new CustomEvent("onWidgetLoad", {
-      ...defaultMockWidgetData,
-      bubbles: true,
-    });
-    root?.dispatchEvent(customEvent);
-    setOnWidgetLoadSent(true);
+    setTimeout(() => {
+      console.log("Dispatching mock onWidgetLoad");
+      const root = document.getElementById("root");
+      const customEvent = new CustomEvent("onWidgetLoad", {
+        ...defaultMockWidgetData,
+        bubbles: true,
+      });
+      root?.dispatchEvent(customEvent);
+      setOnWidgetLoadSent(true);
+    }, 200);
   }, []);
 
   useEffect(() => {
