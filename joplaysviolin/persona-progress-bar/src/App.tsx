@@ -4,9 +4,10 @@ import "./index.css"
 import "./App.css"
 import { DevMock } from './components/DevMock'
 import { SessionDataProvider } from './components/SessionDataProvider'
-import { ProgressBar } from './components/ProgressBar'
 import { ElementParams } from './config/ElementParams'
-import { ProgressCount } from './components/ProgressCount'
+import { ProgressBarRenderer } from './renderers/ProgressBarRenderer'
+import { CanvasRenderer } from './components/CanvasRenderer'
+import { ProgressCountRenderer } from './renderers/ProgressCountRenderer'
 
 function App() {
   return (
@@ -14,10 +15,10 @@ function App() {
       <SessionDataProvider>
         <DevMock />
         <Background />
-        <ProgressBar config={ElementParams.ProgressBars.subs}/>
-        <ProgressBar config={ElementParams.ProgressBars.donos}/>
-        <ProgressCount config={ElementParams.ProgressCounts.subs}/>
-        <ProgressCount config={ElementParams.ProgressCounts.donos}/>
+        <CanvasRenderer renderer={(canvas) => new ProgressBarRenderer(canvas, ElementParams.ProgressBars.subs)} />
+        <CanvasRenderer renderer={(canvas) => new ProgressBarRenderer(canvas, ElementParams.ProgressBars.donos)} />
+        <CanvasRenderer renderer={(canvas) => new ProgressCountRenderer(canvas, ElementParams.ProgressCounts.subs)} />
+        <CanvasRenderer renderer={(canvas) => new ProgressCountRenderer(canvas, ElementParams.ProgressCounts.donos)} />
       </SessionDataProvider>
     </div>
   )
