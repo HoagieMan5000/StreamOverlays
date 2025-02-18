@@ -11,6 +11,7 @@ export class ElementParams {
 
   public static readonly ProgressBars: Record<string, ProgressBarConfig> = {
     subs: {
+      name: "subs",
       origin: { x: 75, y: 705 },
       height: 38,
       rotation: -8.9,
@@ -20,6 +21,7 @@ export class ElementParams {
       getGoal: (detail: SEDetail | null) => detail?.session?.data?.["subscriber-goal"]?.amount ?? 0,
     },
     donos: {
+      name: "donos",
       origin: { x: 217, y: 775 },
       height: 38,
       rotation: -12.89,

@@ -2,6 +2,7 @@ import { SEDetail } from "../streamelements/SEDetail";
 import { Point2d } from "./Point2d";
 
 export interface ProgressBarConfig {
+  name: string;
   origin: Point2d;
   height: number;
   rotation: number;
