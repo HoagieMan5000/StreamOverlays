@@ -45,7 +45,7 @@ export const defaultMockSession: SessionData = {
     sender: "InsertSubGifter",
   },
   "subscriber-session": {
-    count: 8,
+    count: 28,
   },
   "subscriber-new-session": {
     count: 0,
@@ -63,7 +63,7 @@ export const defaultMockSession: SessionData = {
     count: 0,
   },
   "subscriber-goal": {
-    amount: 13,
+    amount: 300,
   },
   "subscriber-total": {
     count: 0,
@@ -190,7 +190,7 @@ export const defaultMockSession: SessionData = {
     count: 3,
   },
   "tip-goal": {
-    amount: 123,
+    amount: 4000,
   },
   "merch-goal-orders": {
     amount: 0,

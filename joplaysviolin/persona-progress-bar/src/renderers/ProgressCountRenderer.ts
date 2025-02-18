@@ -102,7 +102,11 @@ export class ProgressCountRenderer implements IRenderer {
     const newAnim = anime({
       targets: this.currAnim,
       value: this.currAnim!.target,
-      duration: 1000,
+      keyframes: [
+        { value: startValue, duration: 500 },
+        { value: this.currAnim!.target }
+      ],
+      //duration: 1000,
       easing: "easeOutCubic",
       update: () => {
         this.renderCount(this.currAnim!.value, detail);

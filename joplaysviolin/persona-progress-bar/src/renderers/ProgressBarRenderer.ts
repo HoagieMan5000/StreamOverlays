@@ -31,9 +31,11 @@ export class ProgressBarRenderer implements IRenderer {
     const goal = this.config.getGoal(detail);
 
     const targetPercent = Math.min(goal > 0 ? value / goal : 0, 1.0);
-      // Animation not running
+    
+    // Animation not running
     if (!this.currAnim) {
-      if (Math.abs(targetPercent - this.previousPercent) < 1e-6) {
+      const hasChanged = Math.abs(targetPercent - this.previousPercent) > 1e-6;
+      if (!hasChanged) {
         // No change in value, just render the bar
         this.renderBar(targetPercent);
         return;
@@ -44,9 +46,12 @@ export class ProgressBarRenderer implements IRenderer {
     } else {
       // There is an animation running
       if (value !== this.currAnim.target) {
-        // Target changed, pause current animation and start a new one
-        this.currAnim.anim?.pause();
-        this.createAnimation(this.currAnim.value, targetPercent);       
+        const hasChanged = Math.abs(targetPercent - this.previousPercent) > 1e-6;
+        if (hasChanged) {
+          // Target changed, pause current animation and start a new one
+          this.currAnim.anim?.pause();
+          this.createAnimation(this.currAnim!.value, targetPercent);
+        }
       }
     }
   }
