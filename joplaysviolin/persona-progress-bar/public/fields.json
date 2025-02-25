@@ -1,8 +1,29 @@
 {
-    "image": {
-      "type": "image-input",
-      "label": "Image:",
-      "value": ""
+  "image": {
+    "type": "image-input",
+    "label": "Image:",
+    "value": ""
+  },
+  "sub-goal": {
+    "type": "dropdown",
+    "label": "Sub Goal Type",
+    "value": "session",
+    "options": {
+      "session": "session",
+      "week": "week",
+      "month": "month",
+      "total": "total"
+    }
+  },
+  "tip-goal": {
+    "type": "dropdown",
+    "label": "Tip Goal Type",
+    "value": "session",
+    "options": {
+      "session": "session",
+      "week": "week",
+      "month": "month",
+      "total": "total"
     }
   }
-  
+}
