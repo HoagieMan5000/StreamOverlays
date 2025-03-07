@@ -421,6 +421,8 @@ export type ChannelData = {
 
 export type OverlayFieldData = {
   image: string;
+  subGoal: number;
+  tipGoal: number;
 };
 
 export type SEDetail = {

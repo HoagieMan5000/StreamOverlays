@@ -18,8 +18,8 @@ export class ElementParams {
   public static readonly ColorSubs = "#8bffde";
   public static readonly ColorDonos = "#ec5edd";
 
-  private static subAmountField = (detail: SEDetail | null) => `subscriber-${dataSourceDropdownTypes[getFieldValue(detail, "sub-goal") ?? 0]}`;
-  private static tipAmountField = (detail: SEDetail | null) => `tip-${dataSourceDropdownTypes[getFieldValue(detail, "tip-goal") ?? 0]}`;
+  private static subAmountField = (detail: SEDetail | null) => `subscriber-${getFieldValue(detail, "sub-progress-type") ?? "session"}`;
+  private static tipAmountField = (detail: SEDetail | null) => `tip-${getFieldValue(detail, "tip-progress-type") ?? "session"}`;
 
   public static readonly ProgressBars: Record<string, ProgressBarConfig> = {
     subs: {
@@ -29,8 +29,8 @@ export class ElementParams {
       rotation: -8.9,
       maxWidth: 609,
       color: ElementParams.ColorSubs,
-      getValue: (detail: SEDetail | null) => detail?.session?.data?.[this.subAmountField(detail)]?.count ?? 0,
-      getGoal: (detail: SEDetail | null) => detail?.session?.data?.["subscriber-goal"]?.amount ?? 0,
+      getValue: (detail: SEDetail | null) => detail?.session?.data?.[this.subAmountField(detail)]?.count ?? detail?.session?.data?.[this.subAmountField(detail)]?.amount ?? 0,
+      getGoal: (detail: SEDetail | null) => detail?.fieldData?.subGoal ?? 0,
     },
     donos: {
       name: "donos",
@@ -40,7 +40,7 @@ export class ElementParams {
       maxWidth: 609,
       color: ElementParams.ColorDonos,
       getValue: (detail: SEDetail | null) => detail?.session?.data?.[this.tipAmountField(detail)]?.amount ?? 0,
-      getGoal: (detail: SEDetail | null) => detail?.session?.data?.["tip-goal"]?.amount ?? 0,
+      getGoal: (detail: SEDetail | null) => detail?.fieldData?.tipGoal ?? 0,
     },
   };
 
@@ -50,8 +50,8 @@ export class ElementParams {
       rotation: -8.9,
       font: "900 75px Franklin Gothic",
       color: ElementParams.ColorSubs,
-      getValue: (detail: SEDetail | null) => detail?.session?.data?.[this.subAmountField(detail)]?.count ?? 0,
-      getGoal: (detail: SEDetail | null) => detail?.session?.data?.["subscriber-goal"]?.amount ?? 0,
+      getValue: (detail: SEDetail | null) => detail?.session?.data?.[this.subAmountField(detail)]?.count ?? detail?.session?.data?.[this.subAmountField(detail)]?.amount ?? 0,
+      getGoal: (detail: SEDetail | null) => detail?.fieldData?.subGoal ?? 0,
     },
     donos: {
       origin: { x: 410, y: 610 },
@@ -59,7 +59,7 @@ export class ElementParams {
       font: "900 75px Franklin Gothic",
       color: ElementParams.ColorDonos,
       getValue: (detail: SEDetail | null) => detail?.session?.data?.[this.tipAmountField(detail)]?.amount ?? 0,
-      getGoal: (detail: SEDetail | null) => detail?.session?.data?.["tip-goal"]?.amount ?? 0,
+      getGoal: (detail: SEDetail | null) => detail?.fieldData?.tipGoal ?? 0,
       currency: "$",
     },
   };

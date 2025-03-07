@@ -4,26 +4,42 @@
     "label": "Image:",
     "value": ""
   },
-  "sub-goal": {
+  "subGoal": {
+    "type": "number",
+    "label": "Sub Goal",
+    "value": 25,
+    "step": 1,
+    "min": 0
+  },
+  "sub-progress-type": {
     "type": "dropdown",
-    "label": "Sub Goal Type",
+    "label": "Sub Count Type",
     "value": "session",
     "options": {
       "session": "session",
       "week": "week",
       "month": "month",
-      "total": "total"
+      "total": "total",
+      "custom": "goal"
     }
   },
-  "tip-goal": {
+  "tipGoal": {
+    "type": "number",
+    "label": "Tip Goal",
+    "value": 200,
+    "step": 1,
+    "min": 0
+  },
+  "tip-progress-type": {
     "type": "dropdown",
-    "label": "Tip Goal Type",
+    "label": "Tip Count Type",
     "value": "session",
     "options": {
       "session": "session",
       "week": "week",
       "month": "month",
-      "total": "total"
+      "total": "total",
+      "custom": "goal"
     }
   }
 }
