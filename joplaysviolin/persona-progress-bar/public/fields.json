@@ -20,7 +20,7 @@
       "week": "week",
       "month": "month",
       "total": "total",
-      "custom": "goal"
+      "goal": "goal"
     }
   },
   "tipGoal": {
@@ -39,7 +39,7 @@
       "week": "week",
       "month": "month",
       "total": "total",
-      "custom": "goal"
+      "goal": "goal"
     }
   }
 }
