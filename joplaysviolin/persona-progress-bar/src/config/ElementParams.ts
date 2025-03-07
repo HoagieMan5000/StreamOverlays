@@ -15,6 +15,8 @@ export class ElementParams {
   public static readonly referenceCanvasWidth = 882;
   public static readonly referenceCanvasHeight = 882;
 
+  public static readonly defaultBackgroundImageSrc = "https://hoagieman5000.github.io/StreamOverlays/public/joplaysviolin/persona-joverlay-v1-final.png";
+
   public static readonly ColorSubs = "#8bffde";
   public static readonly ColorDonos = "#ec5edd";
 
