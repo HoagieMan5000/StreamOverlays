@@ -5,6 +5,7 @@ import {
 import { SessionDataContext } from "./SessionDataProvider";
 import { BackgroundImageRenderer } from "../renderers/BackgroundImageRenderer";
 import { useResizeCanvas } from "../hooks/resizeCanvas";
+import { useQueue } from "../hooks/useQueue";
 
 interface BackgroundProps {}
 
@@ -12,16 +13,18 @@ export const Background: React.FC<BackgroundProps> = ({}) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const rendererRef = useRef<BackgroundImageRenderer | null>(null);
 
+  const queue = useQueue<SEDetail>();
+
   const { details } = useContext(SessionDataContext);
   const widgetDataRef = useRef<SEDetail | null>(null);
 
   useEffect(() => {
     widgetDataRef.current = details
-    draw(details);
-  }, [details]);
+    draw(queue.currentItem, queue.processNextItem);
+  }, [queue.currentItem]);
 
-  const draw = (detail: SEDetail | null) => {
-    rendererRef.current?.render(detail);
+  const draw = (detail: SEDetail | null, doneAnimating: () => void) => {
+    rendererRef.current?.render(detail, doneAnimating);
   };
 
   useEffect(() => {
@@ -30,14 +33,14 @@ export const Background: React.FC<BackgroundProps> = ({}) => {
       if (details && canvas && !rendererRef.current) {
         rendererRef.current = new BackgroundImageRenderer(canvas);
         await rendererRef.current.initialize(details);
-        draw(details);
+        queue.addToQueue(details);
       }
     }
     initialize();
   }, [details, canvasRef.current]);
 
 
-  useResizeCanvas(canvasRef.current!, () => draw(widgetDataRef.current));
+  useResizeCanvas(canvasRef.current!, () => draw(widgetDataRef.current, () => {}));
 
   return (
     <>

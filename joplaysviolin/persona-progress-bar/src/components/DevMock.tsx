@@ -26,6 +26,7 @@ export const DevMock = () => {
 
   useEffect(() => {
     if (onWidgetLoadSent) {
+      console.log("USING MOCK DATA");
       mockDataChanges1();
     }
   }, [onWidgetLoadSent]);

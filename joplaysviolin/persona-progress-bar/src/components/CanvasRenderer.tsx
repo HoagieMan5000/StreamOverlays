@@ -5,6 +5,7 @@ import {
 import { IRenderer } from "../renderers/IRenderer";
 import { SessionDataContext } from "./SessionDataProvider";
 import { useResizeCanvas } from "../hooks/resizeCanvas";
+import { useQueue } from "../hooks/useQueue";
 
 interface CanvasRendererProps {
   renderer: (canvas: HTMLCanvasElement) => IRenderer;
@@ -18,14 +19,17 @@ export const CanvasRenderer: React.FC<CanvasRendererProps> = (props) => {
   const rendererRef = useRef<IRenderer | null>(null);
   const widgetDataRef = useRef<SEDetail | null>(null);
 
-  useEffect(() => {
-    widgetDataRef.current = details;
-    draw(details);
-  }, [details]);
+  const queue = useQueue<SEDetail>();
 
   const draw = (detail: SEDetail | null) => {
-    rendererRef.current?.render(detail);
+    rendererRef.current?.render(detail, queue.processNextItem);
   };
+
+  useEffect(() => {
+    if (details) {
+      queue.addToQueue(details);
+    }
+  }, [details]);
 
   useEffect(() => {
     async function initialize() {
@@ -33,13 +37,20 @@ export const CanvasRenderer: React.FC<CanvasRendererProps> = (props) => {
       if (details && canvas && !rendererRef.current) {
         rendererRef.current = props.renderer(canvas);
         await rendererRef.current.initialize(details);
-        draw(details);
+        queue.addToQueue(details);
+        widgetDataRef.current = details;
       }
     }
     initialize();
   }, [details, canvasRef.current]);
 
-  useResizeCanvas(canvasRef.current!, () => draw(widgetDataRef.current));
+  useEffect(() => {
+    if (queue.currentItem) {
+      draw(queue.currentItem);
+    }
+  }, [queue.currentItem]);
+
+  useResizeCanvas(canvasRef.current!, () => rendererRef.current?.resize());
 
   return (
     <>

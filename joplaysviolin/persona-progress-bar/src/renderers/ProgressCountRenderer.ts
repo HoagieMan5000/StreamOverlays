@@ -16,7 +16,6 @@ const getYOffset = (i: number) => yOffsets[i % yOffsets.length];
 interface RunningAnimation {
   value: number;
   target: number;
-  anim?: anime.AnimeInstance;
 }
 
 export class ProgressCountRenderer implements IRenderer {
@@ -24,6 +23,7 @@ export class ProgressCountRenderer implements IRenderer {
   private config: ProgressCountConfig;
   private previousValue: number = 0;
   private currAnim: RunningAnimation | null = null;
+  private latestDetail: SEDetail | null = null;
 
   constructor(canvas: HTMLCanvasElement, config: ProgressCountConfig) {
     this.canvas = canvas;
@@ -32,10 +32,13 @@ export class ProgressCountRenderer implements IRenderer {
 
   public async initialize(detail: SEDetail | null): Promise<void> {}
 
-  render(detail: SEDetail | null) {
+  render(detail: SEDetail | null, doneAnimating: () => void) {
     if (!detail) {
+      doneAnimating();
       return;
     }
+
+    this.latestDetail = detail;
 
     const value = this.config.getValue(detail);
     //const goal = this.config.getGoal(detail);
@@ -43,27 +46,22 @@ export class ProgressCountRenderer implements IRenderer {
     // Animation not running
     if (!this.currAnim) {
       if (value === this.previousValue) {
-        // No change in value, just render the bar
+        // No change in value, just render the count
         this.renderCount(value, detail);
+        doneAnimating();
         return;
       }
 
       //Value changed, create animation
-      this.createAnimation(this.previousValue, value, detail);
+      this.createAnimation(this.previousValue, value, detail, doneAnimating);
     } else {
-      // There is an animation running
-      if (value !== this.currAnim.target) {
-        // Target changed, pause current animation and start a new one
-        this.currAnim.anim?.pause();
-        this.createAnimation(this.currAnim.value, value, detail);       
-      }
+     console.error("ProgressCountRenderer: SIMULTANEOUS RENDER TRIGGERED BEFORE ANIMATION COMPLETION");
     }
   }
 
   renderCount(count: number, detail: SEDetail | null) {
     const value = count;
     const goal = this.config.getGoal(detail);
-    console.log({ detail, value, goal });
     const currency = this.config.currency ?? "";
 
     const ctx = this.canvas.getContext("2d")!;
@@ -93,7 +91,7 @@ export class ProgressCountRenderer implements IRenderer {
     ctx.restore();
   }
 
-  createAnimation(startValue: number, targetPercent: number, detail: SEDetail) {
+  createAnimation(startValue: number, targetPercent: number, detail: SEDetail, onComplete: () => void) {
     this.currAnim = {
       value: startValue,
       target: targetPercent,
@@ -104,7 +102,8 @@ export class ProgressCountRenderer implements IRenderer {
       value: this.currAnim!.target,
       keyframes: [
         { value: startValue, duration: 500 },
-        { value: this.currAnim!.target }
+        { value: this.currAnim!.target, duration: 1000 },
+        { duration: 500 },
       ],
       //duration: 1000,
       easing: "easeOutCubic",
@@ -114,8 +113,13 @@ export class ProgressCountRenderer implements IRenderer {
       complete: () => {
         this.previousValue = this.currAnim!.target;
         this.currAnim = null;
+        onComplete();
       }
     });
-    this.currAnim.anim = newAnim;
+  }
+
+  resize(): void {
+    // TODO this is wrong
+    this.renderCount(this.currAnim?.value ?? this.previousValue, this.latestDetail);
   }
 }

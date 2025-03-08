@@ -9,7 +9,7 @@ const dataSourceDropdownTypes = [
   "month",
 ];
 
-const getFieldValue = (detail: SEDetail | null, field: string): number => detail?.fieldData?.[field] ?? 0;
+const getFieldValue = (detail: SEDetail | null, field: string): number => detail?.fieldData?.[field];
 
 export class ElementParams {
   public static readonly referenceCanvasWidth = 882;
@@ -20,8 +20,8 @@ export class ElementParams {
   public static readonly ColorSubs = "#8bffde";
   public static readonly ColorDonos = "#ec5edd";
 
-  private static subAmountField = (detail: SEDetail | null) => `subscriber-${getFieldValue(detail, "sub-progress-type") ?? "session"}`;
-  private static tipAmountField = (detail: SEDetail | null) => `tip-${getFieldValue(detail, "tip-progress-type") ?? "session"}`;
+  private static subAmountField = (detail: SEDetail | null) => `subscriber-${getFieldValue(detail, "sub-progress-type") ?? "goal"}`
+  private static tipAmountField = (detail: SEDetail | null) => `tip-${getFieldValue(detail, "tip-progress-type") ?? "goal"}`;
 
   public static readonly ProgressBars: Record<string, ProgressBarConfig> = {
     subs: {

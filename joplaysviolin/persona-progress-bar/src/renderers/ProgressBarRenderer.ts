@@ -10,7 +10,6 @@ interface RunningAnimation {
   value: number;
   thicknessScale: number;
   target: number;
-  anim?: anime.AnimeInstance;
 }
 
 export class ProgressBarRenderer implements IRenderer {
@@ -26,7 +25,7 @@ export class ProgressBarRenderer implements IRenderer {
 
   public async initialize(detail: SEDetail | null): Promise<void> {}
 
-  render(detail: SEDetail | null) {
+  render(detail: SEDetail | null, doneAnimating: () => void) {
     const value = this.config.getValue(detail);
     const goal = this.config.getGoal(detail);
 
@@ -38,21 +37,16 @@ export class ProgressBarRenderer implements IRenderer {
       if (!hasChanged) {
         // No change in value, just render the bar
         this.renderBar(targetPercent);
+        doneAnimating();
         return;
       }
 
       //Value changed, create animation
-      this.createAnimation(this.previousPercent, targetPercent);
+      this.createAnimation(this.previousPercent, targetPercent, doneAnimating);
     } else {
-      // There is an animation running
-      if (value !== this.currAnim.target) {
-        const hasChanged = Math.abs(targetPercent - this.previousPercent) > 1e-6;
-        if (hasChanged) {
-          // Target changed, pause current animation and start a new one
-          this.currAnim.anim?.pause();
-          this.createAnimation(this.currAnim!.value, targetPercent);
-        }
-      }
+      // NOTHING HERE, we are processing them one at a time
+      console.error("NEW RENDER TRIGGERED BEFORE ANIMATION COMPLETION");
+      return;
     }
   }
 
@@ -83,7 +77,7 @@ export class ProgressBarRenderer implements IRenderer {
     ctx.restore();
   }
 
-  createAnimation(startValue: number, targetPercent: number) {
+  createAnimation(startValue: number, targetPercent: number, onComplete: () => void) {
     this.currAnim = {
       value: startValue,
       target: targetPercent,
@@ -95,11 +89,10 @@ export class ProgressBarRenderer implements IRenderer {
       value: this.currAnim!.target,
       keyframes: [
         { value: this.currAnim!.value, thicknessScale: this.currAnim.thicknessScale, duration: 0 },
-        { value: this.currAnim!.value, thicknessScale: 1.5, duration: 500 },
+        { thicknessScale: 1.5, duration: 500 },
         { value: this.currAnim!.target, thicknessScale: 1.5, duration: 1000 },
-        { value: this.currAnim!.target, thicknessScale: 1.0, duration: 500 },
+        { thicknessScale: 1.0, duration: 500 },
       ],
-      //duration: 1000,
       easing: "easeOutCubic",
       update: () => {
         this.renderBar(this.currAnim!.value, this.currAnim!.thicknessScale);
@@ -107,8 +100,13 @@ export class ProgressBarRenderer implements IRenderer {
       complete: () => {
         this.previousPercent = this.currAnim!.target;
         this.currAnim = null;
+        onComplete();
       }
     });
-    this.currAnim.anim = newAnim;
+  }
+
+  resize(): void {
+    // TODO this is wrong
+    this.renderBar(this.currAnim?.value ?? this.previousPercent);
   }
 }

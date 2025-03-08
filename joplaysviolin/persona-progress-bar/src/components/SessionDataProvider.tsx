@@ -58,13 +58,19 @@ export const SessionDataProvider = (props: SessionDataProviderProps) => {
     }
   };
 
+  const onEventReceived = (obj: any) => {
+    console.log("onEventReceived", obj);
+  };
+
   useEffect(() => {
     window.addEventListener("onWidgetLoad", getConfiguration as any);
     window.addEventListener("onSessionUpdate", onSessionUpdate as any);
+    window.addEventListener("onEventReceived", onEventReceived as any);
 
     return () => {
       window.removeEventListener("onWidgetLoad", getConfiguration as any);
       window.removeEventListener("onSessionUpdate", onSessionUpdate as any);
+      window.removeEventListener("onEventReceived", onEventReceived as any);
     };
   }, []);
 

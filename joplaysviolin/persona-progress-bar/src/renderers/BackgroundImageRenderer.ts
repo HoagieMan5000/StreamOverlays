@@ -9,7 +9,7 @@ export class BackgroundImageRenderer implements IRenderer {
     constructor(canvas: HTMLCanvasElement) {
         this.canvas = canvas;
     }
-
+    
     public async initialize(detail: SEDetail | null): Promise<void> {
         this.image = new Image();
         return new Promise<void>((resolve) => {
@@ -20,8 +20,13 @@ export class BackgroundImageRenderer implements IRenderer {
         });
     }
     
-    render(detail: SEDetail | null) {
+    render(detail: SEDetail | null, doneAnimating: () => void) {
         const ctx = this.canvas.getContext("2d")!;
         ctx.drawImage(this.image!, 0, 0, this.canvas.width, this.canvas.height);
+        doneAnimating();
+    }
+
+    resize(): void {
+        this.render(null, () => {});
     }
 }
