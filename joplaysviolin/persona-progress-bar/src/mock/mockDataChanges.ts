@@ -49,11 +49,11 @@ export async function mockDataChanges1() {
   };
   sendEvent(currSession);
 
-  await sleep(3000);
+  await sleep(5000);
   currSession = {
     ...currSession,
     "tip-goal": {
-      amount: 3500,
+      amount: 3000,
     },
   };
   sendEvent(currSession);

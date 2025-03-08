@@ -190,7 +190,7 @@ export const defaultMockSession: SessionData = {
     count: 3,
   },
   "tip-goal": {
-    amount: 4000,
+    amount: 2000,
   },
   "merch-goal-orders": {
     amount: 0,

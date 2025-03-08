@@ -1,7 +1,5 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import {
-  SEDetail,
-} from "../streamelements/SEDetail";
+import { SEDetail } from "../streamelements/SEDetail";
 import { IRenderer } from "../renderers/IRenderer";
 import { SessionDataContext } from "./SessionDataProvider";
 import { useResizeCanvas } from "../hooks/resizeCanvas";
@@ -15,19 +13,18 @@ export const CanvasRenderer: React.FC<CanvasRendererProps> = (props) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   const { details } = useContext(SessionDataContext);
-  
-  const rendererRef = useRef<IRenderer | null>(null);
-  const widgetDataRef = useRef<SEDetail | null>(null);
 
-  const queue = useQueue<SEDetail>();
+  const rendererRef = useRef<IRenderer | null>(null);
+
+  const { addToQueue, currentItem, processNextItem } = useQueue<SEDetail>();
 
   const draw = (detail: SEDetail | null) => {
-    rendererRef.current?.render(detail, queue.processNextItem);
+    rendererRef.current?.render(detail, processNextItem);
   };
 
   useEffect(() => {
     if (details) {
-      queue.addToQueue(details);
+      addToQueue(details);
     }
   }, [details]);
 
@@ -37,18 +34,18 @@ export const CanvasRenderer: React.FC<CanvasRendererProps> = (props) => {
       if (details && canvas && !rendererRef.current) {
         rendererRef.current = props.renderer(canvas);
         await rendererRef.current.initialize(details);
-        queue.addToQueue(details);
-        widgetDataRef.current = details;
+        // TODO do an initial draw? Or will be be taken care of?
       }
     }
     initialize();
   }, [details, canvasRef.current]);
 
   useEffect(() => {
-    if (queue.currentItem) {
-      draw(queue.currentItem);
+    if (currentItem) {
+      console.log("DRAW");
+      draw(currentItem);
     }
-  }, [queue.currentItem]);
+  }, [currentItem]);
 
   useResizeCanvas(canvasRef.current!, () => rendererRef.current?.resize());
 

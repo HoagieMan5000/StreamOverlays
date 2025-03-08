@@ -24,7 +24,6 @@ export const SessionDataProvider = (props: SessionDataProviderProps) => {
   const getConfiguration = (obj: { detail: SEDetail }) => {
     const detail = obj.detail;
     const fieldData = detail.fieldData;
-    console.log({ detail, fieldData });
 
     setWidgetData(detail);
   };
