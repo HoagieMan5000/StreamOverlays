@@ -76,7 +76,7 @@ export class ProgressCountRenderer implements IRenderer {
       this.config.origin.y * scale.widthRatio
     );
     ctx.rotate(deg2rad(this.config.rotation));
-    ctx.font = `900 ${75 * scale.scale}px Franklin Gothic`;
+    ctx.font = `600 ${65 * scale.scale}px Libre Franklin`;
     ctx.fontKerning = "auto";
     ctx.fillStyle = this.config.color;
     const { width } = createTextWithSpacing(

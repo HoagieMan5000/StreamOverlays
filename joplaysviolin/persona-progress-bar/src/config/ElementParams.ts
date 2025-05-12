@@ -50,7 +50,7 @@ export class ElementParams {
     subs: {
       origin: { x: 90, y: 675 },
       rotation: -8.9,
-      font: "900 75px Franklin Gothic",
+      font: "600 75px Libre Franklin",
       color: ElementParams.ColorSubs,
       getValue: (detail: SEDetail | null) => detail?.session?.data?.[this.subAmountField(detail)]?.count ?? detail?.session?.data?.[this.subAmountField(detail)]?.amount ?? 0,
       getGoal: (detail: SEDetail | null) => detail?.fieldData?.subGoal ?? 0,
@@ -58,7 +58,7 @@ export class ElementParams {
     donos: {
       origin: { x: 410, y: 610 },
       rotation: -8.9,
-      font: "900 75px Franklin Gothic",
+      font: "600 75px Libre Franklin",
       color: ElementParams.ColorDonos,
       getValue: (detail: SEDetail | null) => detail?.session?.data?.[this.tipAmountField(detail)]?.amount ?? 0,
       getGoal: (detail: SEDetail | null) => detail?.fieldData?.tipGoal ?? 0,
