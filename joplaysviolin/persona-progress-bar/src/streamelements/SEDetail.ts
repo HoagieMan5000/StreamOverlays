@@ -423,6 +423,7 @@ export type OverlayFieldData = {
   image: string;
   subGoal: number;
   tipGoal: number;
+  showCents: boolean;
 };
 
 export type SEDetail = {

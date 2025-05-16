@@ -467,7 +467,8 @@ export const defaultMockWidgetData: { detail: SEDetail } = {
       image:
         "https://cdn.streamelements.com/uploads/8678ff66-258c-4e5e-8c16-2ef0e5c355ec.png",
       subGoal: 300,
-      tipGoal: 4000,
+      tipGoal: 400,
+      showCents: true,
     },
   },
 };

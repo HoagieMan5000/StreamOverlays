@@ -6,6 +6,7 @@ export interface ProgressCountConfig {
   rotation: number;
   font: string;
   color: string;
+  showCents: (detail: SEDetail | null) => boolean;
 
   getValue: (detail: SEDetail | null) => number;
   getGoal: (detail: SEDetail | null) => number;

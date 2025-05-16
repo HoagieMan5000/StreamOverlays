@@ -29,6 +29,7 @@ export class ProgressCountRenderer implements IRenderer {
     goal: 0,
     thicknessScale: 1.0,
   };
+  private showCents: boolean = false;
 
   constructor(canvas: HTMLCanvasElement, config: ProgressCountConfig) {
     this.canvas = canvas;
@@ -43,6 +44,7 @@ export class ProgressCountRenderer implements IRenderer {
       return;
     }
 
+    this.showCents = this.config.showCents(detail) ?? false;
     const targetValue = this.config.getValue(detail);
     const goal = this.config.getGoal(detail);
     this.state.goal = goal;
@@ -61,6 +63,9 @@ export class ProgressCountRenderer implements IRenderer {
   renderCount(count: number, goal: number) {
     const value = count;
     const currency = this.config.currency ?? "";
+    const displayValue = this.showCents ? value.toFixed(2) : `${Math.floor(value)}`;
+    const numCharacters = displayValue.length;
+    const fontSize = numCharacters >= 6 ? 60 : 65;
 
     const ctx = this.canvas.getContext("2d")!;
     const scale = getScaleRatio(
@@ -76,12 +81,12 @@ export class ProgressCountRenderer implements IRenderer {
       this.config.origin.y * scale.widthRatio
     );
     ctx.rotate(deg2rad(this.config.rotation));
-    ctx.font = `600 ${65 * scale.scale}px Libre Franklin`;
+    ctx.font = `600 ${fontSize * scale.scale}px Libre Franklin`;
     ctx.fontKerning = "auto";
     ctx.fillStyle = this.config.color;
     const { width } = createTextWithSpacing(
       ctx,
-      `${currency}${Math.floor(value)}/${goal}`,
+      `${currency}${displayValue}/${goal}`,
       (char, dx, i) => {
         ctx.save();
         ctx.rotate(getRotation(i ?? 0)),

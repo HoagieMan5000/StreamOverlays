@@ -30,6 +30,10 @@
     "step": 1,
     "min": 0
   },
+  "showCents": {
+    "type": "checkbox",
+    "label": "Show Cents"
+  },
   "tip-progress-type": {
     "type": "dropdown",
     "label": "Tip Count Type",
