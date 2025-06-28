@@ -13,14 +13,17 @@ export async function mockDataChanges1() {
   };
   sendEvent(currSession);
 
-  await sleep(750);
-  currSession = {
-    ...currSession,
-    "subscriber-goal": {
-      amount: 75,
-    },
-  };
-  sendEvent(currSession);
+  await sleep(100);
+  for (var i = 0; i < 20; i++) {
+    await sleep(10);
+    currSession = {
+      ...currSession,
+      "subscriber-goal": {
+        amount: 75 + i,
+      },
+    };
+    sendEvent(currSession);
+  }
 
   await sleep(750);
   currSession = {
@@ -49,7 +52,7 @@ export async function mockDataChanges1() {
   };
   sendEvent(currSession);
 
-  await sleep(5000);
+  await sleep(2000);
   currSession = {
     ...currSession,
     "tip-goal": {

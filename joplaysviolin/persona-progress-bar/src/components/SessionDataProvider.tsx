@@ -1,5 +1,7 @@
-import { createContext, useEffect, useRef, useState } from "react";
+import { createContext, useCallback, useEffect, useRef, useState } from "react";
 import { OnSessionUpdateEvent, SEDetail } from "../streamelements/SEDetail";
+
+const deliveryDelayMs = 500;
 
 export interface WidgetDataContextType {
   details: SEDetail | null;
@@ -14,48 +16,63 @@ interface SessionDataProviderProps {
 }
 
 export const SessionDataProvider = (props: SessionDataProviderProps) => {
+  const [widgetDataToDeliver, setWidgetDataToDeliver] = useState<SEDetail | null>(null);
+  const [initialWidgetData, setInitialWidgetData] = useState<SEDetail | null>(null);
+  const initialWidgetDataRef = useRef<SEDetail | null>(null);
   const [widgetData, setWidgetData] = useState<SEDetail | null>(null);
-  const widgetDataRef = useRef<SEDetail | null>(null);
+  const [deliverTimeout, setDeliverTimeout] = useState<number | null>(null);
 
   useEffect(() => {
-    widgetDataRef.current = widgetData;
-  }, [widgetData]);
+    initialWidgetDataRef.current = initialWidgetData;
+  }, [initialWidgetData]);
 
   const getConfiguration = (obj: { detail: SEDetail }) => {
     const detail = obj.detail;
     const fieldData = detail.fieldData;
 
+    setInitialWidgetData(detail);
     setWidgetData(detail);
+    setWidgetDataToDeliver(detail);
   };
 
-  const onSessionUpdate = (obj: OnSessionUpdateEvent) => {
-    const widgetData = widgetDataRef.current;
-    if (widgetData) {
-      const newSession = obj.detail?.session;
+  const deliverWidgetData = useCallback(() => {
+    setWidgetData((existing) => {
+      if (existing) {
+        setWidgetDataToDeliver(existing);
+      }
+      return null;
+    });
+  }, [setWidgetData]);
+
+  useEffect(() => {
+    if (!deliverTimeout) {
+      if (widgetData) {
+        let handle = setTimeout(() => {
+          deliverWidgetData();
+          setDeliverTimeout(null);
+        }, deliveryDelayMs);
+        setDeliverTimeout(handle);
+      }
+    }
+  }, [widgetData, deliverTimeout]);
+
+  const onSessionUpdate = useCallback((obj: OnSessionUpdateEvent) => {
+    const newSession = obj.detail?.session;
+    if (initialWidgetDataRef.current) {
       const newDetail = {
-        ...widgetData!,
+        ...initialWidgetDataRef.current,
         session: {
-          ...widgetData!.session,
+          ...initialWidgetDataRef.current?.session,
           data: {
-            ...widgetData!.session.data,
+            ...initialWidgetDataRef.current?.session.data,
             ...newSession,
           },
         },
       };
 
-      console.log("onSessionUpdate", { newDetail });
-      setWidgetData((prev: SEDetail | null) => ({
-        ...prev!,
-        session: {
-          ...prev!.session,
-          data: {
-            ...prev?.session.data,
-            ...newSession,
-          },
-        },
-      }));
+      setWidgetData(newDetail);
     }
-  };
+  }, []);
 
   const onEventReceived = (obj: any) => {
     console.log("onEventReceived", obj);
@@ -74,7 +91,7 @@ export const SessionDataProvider = (props: SessionDataProviderProps) => {
   }, []);
 
   return (
-    <SessionDataContext.Provider value={{ details: widgetData }}>
+    <SessionDataContext.Provider value={{ details: widgetDataToDeliver }}>
       {props.children}
     </SessionDataContext.Provider>
   );
